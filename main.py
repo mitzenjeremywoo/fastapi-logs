@@ -1,5 +1,5 @@
 from typing import Union, Annotated
-from fastapi import FastAPI, HTTPException, Request, Header
+from fastapi import FastAPI, HTTPException, Request, Header, Cookie
 from pydantic import BaseModel
 from datetime import datetime, timezone
 
@@ -64,3 +64,9 @@ def create_admin(employee: Employee, user_agent: str = Header(None)):
 @app.get("/admin")
 async def get_admin(user_agent: Annotated[str | None, Header()] = None):
     return {"User-Agent": user_agent}
+
+# getting cookie information from the request
+@app.get("/product/")
+async def list_product(ads_id: Annotated[str | None, Cookie()] = None):
+    print(ads_id)
+    return {"ads_id": ads_id}
