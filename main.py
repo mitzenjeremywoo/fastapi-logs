@@ -1,5 +1,5 @@
-from typing import Union
-from fastapi import FastAPI, HTTPException
+from typing import Union, Annotated
+from fastapi import FastAPI, HTTPException, Request, Header
 from pydantic import BaseModel
 from datetime import datetime, timezone
 
@@ -47,6 +47,20 @@ def read_item(id: int, employee: Employee):
     else:
         raise HTTPException(status_code=404, detail="User not found")
 
-        
-    
+# getting header from request; this does not have openAPI UI support
+# @app.post("/admin")
+# def read_item(employee: Employee, request: Request):
+#     user_agent = request.headers.get("user-agent")
+#     print(user_agent)
+#     return employee
 
+# another way of getting headers 
+@app.post("/admin")
+def create_admin(employee: Employee, user_agent: str = Header(None)):
+    print("user-agent is", user_agent)
+    return employee
+
+# another approach but with open API support for headers
+@app.get("/admin")
+async def get_admin(user_agent: Annotated[str | None, Header()] = None):
+    return {"User-Agent": user_agent}
